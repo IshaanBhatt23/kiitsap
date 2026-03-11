@@ -1,0 +1,152 @@
+[
+  {
+    "category": "Employee (ESS – Employee Self-Service)",
+    "question": "How do I apply for leave?",
+    "answer": "Log in to SAP Fiori → Open My Leave Request → Select leave type and dates → Submit for approval."
+  },
+  {
+    "category": "Employee (ESS – Employee Self-Service)",
+    "question": "Where can I view my payslip?",
+    "answer": "Use the My Payslips Fiori app to view or download your payslips."
+  },
+  {
+    "category": "Employee (ESS – Employee Self-Service)",
+    "question": "How do I check my leave balance?",
+    "answer": "Open My Leave Balance in SAP Fiori to view available and consumed leave."
+  },
+  {
+    "category": "Employee (ESS – Employee Self-Service)",
+    "question": "Can I update my bank or contact details?",
+    "answer": "Yes. Go to My Profile or Manage My Personal Data, update the information, and submit for approval if required."
+  },
+  {
+    "category": "Employee (ESS – Employee Self-Service)",
+    "question": "I cannot log in to SAP Fiori. What should I do?",
+    "answer": "Please raise a ticket with IT support to verify user ID, password, and role assignment."
+  },
+  {
+    "category": "Employee (ESS – Employee Self-Service)",
+    "question": "How do I submit travel or reimbursement requests?",
+    "answer": "Use the My Travel Requests or Expense Claims app as per company policy."
+  },
+  {
+    "category": "Manager (MSS – Manager Self-Service)",
+    "question": "How do I approve leave requests?",
+    "answer": "Open My Inbox in SAP Fiori → Review the request → Approve or Reject with comments."
+  },
+  {
+    "category": "Manager (MSS – Manager Self-Service)",
+    "question": "How can I see my team’s attendance?",
+    "answer": "Use My Team Calendar or Team Attendance Overview in SAP Fiori."
+  },
+  {
+    "category": "Manager (MSS – Manager Self-Service)",
+    "question": "How do I approve employee expenses?",
+    "answer": "Expense approvals are available in My Inbox under pending workflow items."
+  },
+  {
+    "category": "Manager (MSS – Manager Self-Service)",
+    "question": "Can I initiate transfers or promotions?",
+    "answer": "Yes. Use the respective MSS HR action app as enabled by HR and SAP roles."
+  },
+  {
+    "category": "Manager (MSS – Manager Self-Service)",
+    "question": "I approved something by mistake. What now?",
+    "answer": "Please contact HR or SAP support immediately. Reversal depends on process stage."
+  },
+  {
+    "category": "Manager (MSS – Manager Self-Service)",
+    "question": "Why don’t I see my team members?",
+    "answer": "This is typically an organizational hierarchy or authorization issue. Contact HRIS or SAP support."
+  },
+  {
+    "category": "Procurement (SAP MM – Buyer / Purchase Officer)",
+    "question": "How do I create a Purchase Requisition?",
+    "answer": "Use Create Purchase Requisition in SAP Fiori, enter material or service details, quantity, and submit for approval."
+  },
+  {
+    "category": "Procurement (SAP MM – Buyer / Purchase Officer)",
+    "question": "How do I convert a PR into a PO?",
+    "answer": "Use Manage Purchase Requisitions or Create Purchase Order and reference the approved PR."
+  },
+  {
+    "category": "Procurement (SAP MM – Buyer / Purchase Officer)",
+    "question": "How do I check PO status?",
+    "answer": "Use Display Purchase Order or Manage Purchase Orders to view delivery, goods receipt, and invoice status."
+  },
+  {
+    "category": "Procurement (SAP MM – Buyer / Purchase Officer)",
+    "question": "What is a Service Entry Sheet?",
+    "answer": "It confirms service delivery against a Service PO and is required before invoice posting."
+  },
+  {
+    "category": "Procurement (SAP MM – Buyer / Purchase Officer)",
+    "question": "How do I create a Goods Receipt?",
+    "answer": "Use Post Goods Receipt and reference the PO. Stock and accounting entries are updated automatically."
+  },
+  {
+    "category": "Procurement (SAP MM – Buyer / Purchase Officer)",
+    "question": "Why is my invoice blocked?",
+    "answer": "Invoice blocks usually occur due to price or quantity mismatch between PO, GR, and Invoice."
+  },
+  {
+    "category": "Procurement (SAP MM – Buyer / Purchase Officer)",
+    "question": "How do I create or change a vendor?",
+    "answer": "Use Manage Business Partner in S/4HANA or raise a request as per vendor onboarding process."
+  },
+  {
+    "category": "Procurement (SAP MM – Buyer / Purchase Officer)",
+    "question": "What if delivery is delayed by vendor?",
+    "answer": "Update delivery dates in the PO and follow up with the vendor. Escalate if required."
+  },
+  {
+    "category": "Finance (FI / AP / GL – Finance & Accounts)",
+    "question": "How is invoice posting done?",
+    "answer": "Invoices are posted via the Supplier Invoice app after PO and GR validation."
+  },
+  {
+    "category": "Finance (FI / AP / GL – Finance & Accounts)",
+    "question": "What is 3-way matching?",
+    "answer": "It matches Purchase Order, Goods Receipt, and Invoice before posting vendor liability."
+  },
+  {
+    "category": "Finance (FI / AP / GL – Finance & Accounts)",
+    "question": "Why is an invoice parked instead of posted?",
+    "answer": "Invoices are parked when additional validation or approval is required."
+  },
+  {
+    "category": "Finance (FI / AP / GL – Finance & Accounts)",
+    "question": "How do I check vendor payments?",
+    "answer": "Use Display Vendor Line Items or Manage Supplier Line Items."
+  },
+  {
+    "category": "Finance (FI / AP / GL – Finance & Accounts)",
+    "question": "What is automatic account determination?",
+    "answer": "SAP automatically determines G/L accounts based on movement type, valuation class, and configuration."
+  },
+  {
+    "category": "Finance (FI / AP / GL – Finance & Accounts)",
+    "question": "How do I reverse an invoice?",
+    "answer": "Use Reverse Supplier Invoice if payment is not processed. Otherwise a credit memo is required."
+  },
+  {
+    "category": "Finance (FI / AP / GL – Finance & Accounts)",
+    "question": "Why is GR/IR not clearing?",
+    "answer": "GR/IR remains open if quantities or values do not match. Reconciliation is required."
+  },
+  {
+    "category": "Finance (FI / AP / GL – Finance & Accounts)",
+    "question": "How do I close a PO financially?",
+    "answer": "Set the Final Invoice or Final Delivery indicator once no further postings are expected."
+  },
+  {
+    "category": "Common / Support",
+    "question": "Why can’t I see a Fiori app?",
+    "answer": "This is usually due to missing role or authorization. Contact SAP security or IT support."
+  },
+  {
+    "category": "Common / Support",
+    "question": "Who should I contact for SAP issues?",
+    "answer": "Raise a ticket with the SAP Helpdesk or CoE including the document number and screenshots."
+  }
+]
