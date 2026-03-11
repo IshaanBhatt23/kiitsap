@@ -202,14 +202,24 @@ const getToolsPrompt = () => {
 };
 
 // === HELPER FUNCTION TO CALL GROQ ===
-async function callGroqLLM(systemPrompt, userPrompt, isJsonMode = false) {
+// NOTICE: Added chatHistory parameter to inject memory!
+async function callGroqLLM(systemPrompt, userPrompt, isJsonMode = false, chatHistory = []) {
   if (!GROQ_API_KEY) {
     console.error("GROQ_API_KEY environment variable not set.");
     return { error: true, message: "Groq API key is missing.", status: 500 };
   }
 
+  // Map the frontend's history format to Groq's role/content format
+  const formattedHistory = chatHistory
+    .filter(msg => msg.text) // Exclude UI/Table messages that have no raw text
+    .map(msg => ({
+      role: msg.sender === "user" ? "user" : "assistant",
+      content: msg.text
+    }));
+
   const messages = [
     { role: "system", content: systemPrompt },
+    ...formattedHistory,
     { role: "user", content: userPrompt },
   ];
 
@@ -275,21 +285,23 @@ app.post("/api/chat", async (req, res) => {
     return res.status(400).json({ error: "Invalid messageHistory provided." });
   }
 
-  let lastMsg;
-  for (const msg of messageHistory) {
-    lastMsg = msg;
-  }
+  // Extract the current query (the very last message)
+  const lastMsg = messageHistory[messageHistory.length - 1];
   const originalUserQuery = lastMsg.text;
+
+  // Extract the conversation history (everything before the last message)
+  const previousHistory = messageHistory.slice(0, -1);
 
   console.log(`\n*** Received query: "${originalUserQuery}" ***`);
 
   try {
     // === STEP 1: Call Groq for the decision ===
-    const decisionMakingPrompt = `User's input: "${originalUserQuery}"\n\nBased on this input and the rules provided in the system prompt, what is the correct JSON response? Pay CLOSE attention to parameter extraction rules for tools, especially when multiple items are mentioned.`;
+    const decisionMakingPrompt = `User's latest input: "${originalUserQuery}"\n\nBased on this input and the rules provided in the system prompt, what is the correct JSON response? Pay CLOSE attention to parameter extraction rules for tools. If the user uses pronouns like "it" or "that", use the conversation history context to figure out what they mean!`;
     const decisionResult = await callGroqLLM(
       getToolsPrompt(),
       decisionMakingPrompt,
       true,
+      previousHistory // Injecting memory here
     );
 
     if (decisionResult && decisionResult.error) {
@@ -411,7 +423,8 @@ app.post("/api/chat", async (req, res) => {
             }
           }
 
-          const finalResult = await callGroqLLM(llmSystemPrompt, llmUserPrompt);
+          // Injecting memory here
+          const finalResult = await callGroqLLM(llmSystemPrompt, llmUserPrompt, false, previousHistory);
 
           if (finalResult && !finalResult.error) {
             toolResult = { type: "text", content: cleanAiText(finalResult) };
@@ -489,7 +502,8 @@ app.post("/api/chat", async (req, res) => {
             3. Keep the answer short and practical.
           `;
 
-          const finalResult = await callGroqLLM(llmSystemPrompt, llmUserPrompt);
+          // Injecting memory here
+          const finalResult = await callGroqLLM(llmSystemPrompt, llmUserPrompt, false, previousHistory);
 
           if (finalResult && !finalResult.error) {
             toolResult = {
@@ -816,10 +830,15 @@ app.post("/api/chat", async (req, res) => {
         default:
           console.warn(`>>> Unhandled tool detected: ${decision.tool_name}`);
           const fallbackTextPrompt = `The user said: "${originalUserQuery}". I decided to use a tool called '${decision.tool_name}' which isn't recognized. Ask the user to clarify or rephrase.`;
+          
+          // Injecting memory here
           const fallbackResult = await callGroqLLM(
             "You are a helpful SAP assistant.",
             fallbackTextPrompt,
+            false,
+            previousHistory
           );
+          
           const fallbackContent =
             fallbackResult && !fallbackResult.error
               ? fallbackResult
