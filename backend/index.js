@@ -133,6 +133,12 @@ const tools = [
     parameters: {},
   },
   {
+    name: "download_manual",
+    description:
+      "Use this tool ONLY when the user explicitly asks to download a manual, rulebook, or specifically the mentor mentee user manual.",
+    parameters: {},
+  },
+  {
     name: "query_inventory",
     description:
       "Use this tool ONLY when the user asks about stock levels OR asks if specific materials/items are in stock (e.g., 'check stock', 'do we have bearings?', 'stock of pump 1001', 'pumps and bearings'). **CRITICAL: You MUST extract the specific material name(s) or ID(s)** mentioned by the user and put them in the 'material_id' parameter. If multiple items are mentioned (like 'pumps and bearings'), include ALL items separated by 'and' or commas in the 'material_id'. Do NOT use for general questions.",
@@ -147,7 +153,7 @@ const tools = [
   {
     name: "get_sales_orders",
     description:
-      'Use this tool ONLY to find/view EXISTING sales orders. Filter by customer, material(s), or status if provided. For multiple materials, include all separated by delimiters. Do NOT use for \"how to\", \"process\", or definition questions.',
+      'Use this tool ONLY to find/view EXISTING sales orders. Filter by customer, material(s), or status if provided. For multiple materials, include all separated by delimiters. Do NOT use for "how to", "process", or definition questions.',
     parameters: {
       customer: "(Optional) The customer name to filter by.",
       material:
@@ -158,7 +164,7 @@ const tools = [
   {
     name: "get_purchase_orders",
     description:
-      'Use this tool ONLY to find/view EXISTING purchase orders or vendor list. Filter by vendor, city, total value or quantity if provided. For multiple materials, include all separated by delimiters. Do NOT use for \"how to\", \"process\", or definition questions.',
+      'Use this tool ONLY to find/view EXISTING purchase orders or vendor list. Filter by vendor, city, total value or quantity if provided. For multiple materials, include all separated by delimiters. Do NOT use for "how to", "process", or definition questions.',
     parameters: {
       vendor: "(Optional) The vendor name or code to filter by.",
       quantity: "(Optional) The exact numeric quantity to filter by.",
@@ -181,8 +187,9 @@ const getToolsPrompt = () => {
   3. **Process Questions:** If the user asks 'how to X', 'process for X', 'steps to X', use the 'get_sap_definition' tool. Extract X as the 'term'.
   4. **Data/Records Requests:** If the user asks to VIEW/SEE/GET existing data or records (e.g., "show me purchase orders", "get sales orders", "what are THE purchase orders", "view stock", "POs for ABC vendor"), use the corresponding data tool ('query_inventory', 'get_sales_orders', 'get_purchase_orders'). **CRITICAL:** Extract relevant parameters accurately. For multiple items mentioned, include all in the parameter.
   5. **Form Requests:** If the user asks to apply for leave or wants a leave form, use 'show_leave_application_form'.
-  6. **Simple Chat:** If the input is a simple acknowledgment ('ok', 'thanks'), compliment, or greeting, respond briefly using JSON format A.
-  7. **Fallback:** If unclear, respond politely using JSON format A.
+  6. **Manuals:** If the user asks to download or view a manual (like the mentor mentee manual), use the 'download_manual' tool.
+  7. **Simple Chat:** If the input is a simple acknowledgment ('ok', 'thanks'), compliment, or greeting, respond briefly using JSON format A.
+  8. **Fallback:** If unclear, respond politely using JSON format A.
   
   **KEY DISTINCTION:** * "What is a purchase order?" > Definition (use get_sap_definition)
   * "What are the purchase orders?" / "Show purchase orders" > Data request (use get_purchase_orders)
@@ -505,6 +512,15 @@ app.post("/api/chat", async (req, res) => {
         case "show_leave_application_form":
           console.log(">>> Triggering leave form display.");
           toolResult = { type: "leave_application_form" };
+          break;
+
+        case "download_manual":
+          console.log(">>> Triggering manual download.");
+          toolResult = {
+            type: "text",
+            content:
+              "Here is the document you requested! You can download it directly here: **[Download Mentor-Mentee User Manual](/MENTOR_MENTEE_USER_MANUAL.pdf)**",
+          };
           break;
 
         case "query_inventory": {

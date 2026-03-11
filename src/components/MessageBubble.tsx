@@ -219,7 +219,32 @@ export const MessageBubble = ({ message, onFormSubmit }: MessageBubbleProps) => 
 
         {message.data.type === "text" && message.data.content && (
           <div className="prose prose-sm dark:prose-invert max-w-none">
-            <ReactMarkdown>{cleanText(message.data.content)}</ReactMarkdown>
+            <ReactMarkdown
+              components={{
+                a: ({ node, ...props }) => {
+                  const href = props.href || "";
+                  // Check if the link points to a PDF
+                  const isDownload = href.toLowerCase().endsWith(".pdf");
+                  // Extract the actual filename from the link (e.g. MENTOR_MENTEE_USER_MANUAL.pdf)
+                  const fileName = href.split('/').pop() || "document.pdf";
+                  
+                  return (
+                    <a
+                      {...props}
+                      // Pass the exact filename to force the OS to save it as that file type
+                      {...(isDownload ? { download: fileName } : {})}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 dark:text-blue-400 font-bold underline decoration-blue-500/50 hover:text-blue-600 transition-colors cursor-pointer"
+                    >
+                      {props.children}
+                    </a>
+                  );
+                },
+              }}
+            >
+              {cleanText(message.data.content)}
+            </ReactMarkdown>
           </div>
         )}
 
