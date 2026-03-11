@@ -6,7 +6,6 @@ import {
   Trash2,
   Trash,
   Pencil,
-  Search,
   Pin,
   Download,
 } from "lucide-react";
@@ -35,8 +34,6 @@ interface ChatSession {
 interface ChatHistoryProps {
   sessions: ChatSession[];
   activeSessionId: string | null;
-  searchQuery: string;
-  onSearchChange: (query: string) => void;
   onNewChat: () => void;
   onSelectSession: (id: string) => void;
   onDeleteSession: (id: string) => void;
@@ -49,8 +46,6 @@ interface ChatHistoryProps {
 export const ChatHistory = ({
   sessions,
   activeSessionId,
-  searchQuery,
-  onSearchChange,
   onNewChat,
   onSelectSession,
   onDeleteSession,
@@ -94,7 +89,7 @@ export const ChatHistory = ({
   return (
     <div className="flex h-full flex-col bg-chat-sidebar">
       {/* Header */}
-      <div className="border-b border-border/50 p-4 space-y-4">
+      <div className="border-b border-border/50 p-4">
         <Button
           onClick={onNewChat}
           className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
@@ -102,18 +97,6 @@ export const ChatHistory = ({
           <Plus className="mr-2 h-4 w-4" />
           New Chat
         </Button>
-
-        {/* Search Bar */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary-foreground/40" />
-          <Input
-            type="text"
-            placeholder="Search conversations..."
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full bg-chat-sidebar-hover border-primary-foreground/20 pl-9 text-primary-foreground placeholder:text-primary-foreground/40"
-          />
-        </div>
       </div>
 
       {/* Chat List */}
@@ -122,9 +105,7 @@ export const ChatHistory = ({
           <div className="flex flex-col items-center justify-center h-full px-6 py-12 text-center">
             <MessageSquare className="h-12 w-12 text-primary-foreground/30 mb-4" />
             <p className="text-sm text-primary-foreground/60">
-              {searchQuery
-                ? `No results for "${searchQuery}"`
-                : "Your conversations will appear here"}
+              Your conversations will appear here
             </p>
           </div>
         ) : (

@@ -29,7 +29,6 @@ const Index = () => {
   const [isConnected] = useState(true);
   const [isBotTyping, setIsBotTyping] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
 
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -174,8 +173,6 @@ const Index = () => {
         <ChatHistory
           sessions={sessions}
           activeSessionId={activeSessionId}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
           onNewChat={() => handleNewChat(true)}
           onSelectSession={(id) => {
             handleSelectSession(id);
