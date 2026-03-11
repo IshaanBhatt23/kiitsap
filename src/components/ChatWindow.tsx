@@ -3,15 +3,9 @@ import { MessageBubble, Message } from "@/components/MessageBubble"
 import { WelcomeScreen } from "@/components/WelcomeScreen" 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Sun, Moon, Github, Linkedin, Globe, Menu } from "lucide-react"
+import { Sun, Moon, Menu } from "lucide-react"
 import { useTheme } from "next-themes"
 import { motion, AnimatePresence } from "framer-motion"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 
 interface ChatWindowProps {
@@ -88,42 +82,9 @@ export const ChatWindow = ({ messages, onPromptClick, onFormSubmit, isConnected,
         </div>
 
         <div className="flex items-center gap-2 md:gap-3">
-          {/* Desktop-only social links */}
+          {/* Desktop-only credits text */}
           <div className="hidden md:flex items-center gap-3">
-            <p className="text-sm text-muted-foreground">Made by Ishaan Bhatt</p>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <a href="https://github.com/IshaanBhatt23" target="_blank" rel="noopener noreferrer">
-                    <Button variant="ghost" size="icon" className="rounded-full h-8 w-8">
-                      <Github className="h-4 w-4 text-muted-foreground" />
-                    </Button>
-                  </a>
-                </TooltipTrigger>
-                <TooltipContent><p>GitHub</p></TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <a href="https://www.linkedin.com/in/ishaan-bhatt-110a93256/" target="_blank" rel="noopener noreferrer">
-                    <Button variant="ghost" size="icon" className="rounded-full h-8 w-8">
-                      <Linkedin className="h-4 w-4 text-muted-foreground" />
-                    </Button>
-                  </a>
-                </TooltipTrigger>
-                <TooltipContent><p>LinkedIn</p></TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <a href="https://personal-portfolio-puce-delta-61.vercel.app/" target="_blank" rel="noopener noreferrer">
-                    <Button variant="ghost" size="icon" className="rounded-full h-8 w-8">
-                      <Globe className="h-4 w-4 text-muted-foreground" />
-                    </Button>
-                  </a>
-                </TooltipTrigger>
-                <TooltipContent><p>Portfolio</p></TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-
+            <p className="text-sm text-muted-foreground">Made By Ishaan and Bhargav</p>
             <div className="h-6 w-px bg-border mx-2"></div>
           </div>
           
