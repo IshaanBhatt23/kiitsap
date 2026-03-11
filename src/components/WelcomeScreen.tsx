@@ -95,12 +95,14 @@ export const WelcomeScreen = ({ onPromptClick }: WelcomeScreenProps) => {
   );
 
   return (
-    <div className="flex flex-col items-center justify-start md:justify-center text-center px-3 py-2 md:p-4 md:py-12 h-full">
+    // Changed h-full to min-h-full so the box can stretch when content gets long
+    <div className="flex flex-col items-center justify-start md:justify-center text-center px-3 pt-8 md:p-4 md:pt-12 min-h-full w-full">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="max-w-2xl mx-auto w-full"
+        // Added pb-32 here to guarantee breathing room above the chat input
+        className="max-w-2xl mx-auto w-full pb-32"
       >
         {/* Logo */}
         <div className="mx-auto mb-1 md:mb-3 h-9 w-9 md:h-16 md:w-16 flex items-center justify-center rounded-full bg-primary/10 text-primary">
