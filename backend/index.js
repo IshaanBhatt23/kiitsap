@@ -93,7 +93,7 @@ const faqknowledgeData = readJsonSafely(faqKnowledgeDbPath, []);
 const faqknowledgeFuse = new Fuse(faqknowledgeData, {
   keys: ["question", "answer", "category"],
   includeScore: true,
-  threshold: 0.45,
+  threshold: 0.5,
   ignoreLocation: true,
 });
 
@@ -123,7 +123,7 @@ const tools = [
       "Use this tool to answer SAP process or usage questions based on the FAQ knowledge base.",
     parameters: {
       question:
-        "(Required) The user's SAP question such as 'how do I apply leave' or 'how to create purchase requisition'.",
+        "(Required) The EXACT raw question entered by the user. DO NOT rephrase or expand acronyms. If the user says 'PR', you must keep it as 'PR'.",
     },
   },
   {
@@ -183,8 +183,8 @@ const getToolsPrompt = () => {
 
   Follow these rules STRICTLY based on the user's latest input:
   1. **Analyze Intent:** Determine the user's primary goal. Are they asking *what* something is (Definition)? Are they asking *how* to do something (Process)? Are they asking to *see/view/get data* (Inventory, SO, PO)? Are they asking for a *form* (Leave)? Or just chatting?
-  2. **Definition Questions:** If the user asks 'what is X' or 'define X' where X is a CONCEPT/TERM (e.g., "what is FB60", "define purchase order", "what is S/4HANA"), use the 'get_sap_definition' tool.
-  3. **Process Questions:** If the user asks 'how to X', 'process for X', 'steps to X', use the 'get_sap_definition' tool. Extract X as the 'term'.
+  2. **Definition Questions:** If the user asks 'what is X' or 'define X' where X is a CONCEPT/TERM (e.g., "what is FB60", "define purchase order", "what is S/4HANA"), use the 'get_sap_definition' or 'get_sap_faq' tool.
+  3. **Process Questions:** If the user asks 'how to X', 'process for X', 'steps to X', use the 'get_sap_definition' or 'get_sap_faq' tool. Extract X as the 'term'.
   4. **Data/Records Requests:** If the user asks to VIEW/SEE/GET existing data or records (e.g., "show me purchase orders", "get sales orders", "what are THE purchase orders", "view stock", "POs for ABC vendor"), use the corresponding data tool ('query_inventory', 'get_sales_orders', 'get_purchase_orders'). **CRITICAL:** Extract relevant parameters accurately. For multiple items mentioned, include all in the parameter.
   5. **Form Requests:** If the user asks to apply for leave or wants a leave form, use 'show_leave_application_form'.
   6. **Manuals:** If the user asks to download or view a manual (like the mentor mentee manual), use the 'download_manual' tool.
@@ -460,7 +460,7 @@ app.post("/api/chat", async (req, res) => {
           console.log(`>>> Found ${faqSearchResults.length} FAQ matches`);
 
           const topResults = faqSearchResults
-            .filter((result) => result.score < 0.6)
+            .filter((result) => result.score < 0.75)
             .slice(0, 3);
 
           if (topResults.length === 0) {

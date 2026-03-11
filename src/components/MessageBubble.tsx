@@ -221,6 +221,11 @@ export const MessageBubble = ({ message, onFormSubmit }: MessageBubbleProps) => 
           <div className="prose prose-sm dark:prose-invert max-w-none">
             <ReactMarkdown
               components={{
+                // Explicitly defining list styles to override Tailwind's reset
+                ol: ({ node, ...props }) => <ol className="list-decimal pl-5 my-2 space-y-1" {...props} />,
+                ul: ({ node, ...props }) => <ul className="list-disc pl-5 my-2 space-y-1" {...props} />,
+                li: ({ node, ...props }) => <li className="leading-relaxed" {...props} />,
+                
                 a: ({ node, ...props }) => {
                   const href = props.href || "";
                   // Check if the link points to a PDF
