@@ -13,20 +13,24 @@ Sap-chatflow functions as a highly effective digital assistant, providing both *
 
 ### 1. 🧠 Contextual Information Retrieval (RAG)
 - **SAP Terminology:** Instantly provides clear, layman definitions and explanations for complex SAP transaction codes (e.g., `FB60`) and process terminology, sourced from a dedicated knowledge base.  
-- **Knowledge Base:** Utilizes a specialized external knowledge base for grounded responses, ensuring accuracy and relevance to the SAP domain.
+- **FAQ Handling:** Accurately answers step-by-step process questions (e.g., "How do I create a PO?") by querying a dedicated FAQ knowledge base.
+- **Fuzzy Searching:** Uses advanced fuzzy text matching to understand user queries even with typos or slight variations.
 
 ### 2. 📊 Dynamic Data Lookups
 Users can query real-time operational data, which the chatbot retrieves from the backend’s persistent storage and displays in formatted tables directly in the chat.
-
 - **Inventory Status:** Check current stock levels for specific materials.  
-- **Procurement:** View lists of active Purchase Orders (POs).  
+- **Procurement:** View lists of active Purchase Orders (POs) and filter by value or vendor.  
 - **Sales:** Retrieve delivered or open Sales Orders (SOs).  
 
 ### 3. ⚙️ Interactive Workflow Automation
-The chatbot can dynamically generate **fillable forms** within the chat for routine administrative tasks.
+The chatbot can dynamically generate interactive UI elements within the chat for routine administrative tasks.
+- **Leave Application:** Generates a structured, fillable form upon user request and saves the data to the backend.  
+- **Document Retrieval:** Provides direct, one-click downloads for PDF documents like the Mentor-Mentee User Manual.
 
-- **Leave Application:** Generates a structured form upon user request.  
-- **Data Submission:** Completed forms are stored in the backend’s persistent storage through the backend’s data handling logic.
+### 4. 🗂️ Intelligent Chat Management
+- **Chat History:** A dedicated sidebar to manage past conversations.
+- **Session Controls:** Pin important chats, rename sessions, export chat logs, or delete history.
+- **UI/UX:** Beautiful, animated interface with dark/light mode support and perfect markdown formatting (including tables and styled lists).
 
 ---
 
@@ -34,12 +38,12 @@ The chatbot can dynamically generate **fillable forms** within the chat for rout
 
 | Category | Technology | Purpose |
 |-----------|-------------|----------|
-| **Frontend** | TypeScript / React (Vite) | Modern, responsive chat interface and UI components (`./src/components/`) |
-| **Backend** | Node.js (via `index.js`) | Handles API calls to the LLM, RAG logic, and data persistence |
-| **LLM** | Llama 3.1 | Core generative model for user intent and response formulation |
-| **Architecture** | Retrieval-Augmented Generation (RAG) | Grounds LLM responses using SAP-specific data from local files |
-| **Package Manager** | Bun / npm | Dependency management and app execution |
-| **Data Storage** | Local Persistent Storage | Stores the SAP knowledge base and simulates ERP transactional data |
+| **Frontend** | React (Vite) & TypeScript | Modern, responsive chat interface and UI components |
+| **Backend** | Node.js & Express | Handles API routing, tool execution, and local JSON data persistence |
+| **LLM** | Llama 3.1 8B Instant | Core generative model, accessed via the lightning-fast **Groq API** |
+| **Architecture** | RAG & Function Calling | Grounds LLM responses using SAP-specific data and dynamic tool routing |
+| **Search Logic** | Fuse.js | Lightweight fuzzy-search library for precise knowledge base retrieval |
+| **UI Styling** | Tailwind CSS & Framer Motion | Fluid animations, perfectly spaced typography, and responsive design |
 
 ---
 
@@ -48,60 +52,49 @@ The chatbot can dynamically generate **fillable forms** within the chat for rout
 ### Prerequisites
 - [Node.js](https://nodejs.org/) (LTS version)
 - [Bun](https://bun.sh) (Recommended) or npm/yarn
-- Access to a **Llama 3.1 API endpoint** or a locally run instance (e.g., via **Ollama** or similar inference engine)
+- A free **Groq API Key** (Get one at [console.groq.com](https://console.groq.com/))
 
 ---
 
 ### Installation Steps
 
 #### 1. Clone the Repository
-```bash
+\`\`\`bash
 git clone https://github.com/IshaanBhatt23/sap-chatflow
 cd sap-chatflow
-```
+\`\`\`
 
 #### 2. Install Dependencies
 Since the repository uses `bun.lockb`, using **Bun** is recommended:
-```bash
+\`\`\`bash
 bun install
-# OR
-npm install
-# OR
-yarn install
-```
+\`\`\`
+*(Alternatively, you can use `npm install` or `yarn install`)*
 
 #### 3. Configure Environment Variables
-Create a `.env` file in the project root and add your configuration details:
+Create a `.env` file in the project root (or inside your backend folder depending on your setup) and add your Groq API key:
+\`\`\`env
+GROQ_API_KEY="your_groq_api_key_here"
+\`\`\`
+*(Note: Ensure your `index.js` backend file is configured to read this from `process.env.GROQ_API_KEY`!)*
 
-```bash
-# LLM Configuration
-VITE_LLAMA_API_URL="[Your-Llama-3.1-API-Endpoint]"
-VITE_LLAMA_API_KEY="[Your-API-Key]"
+#### 4. Add Public Assets
+Ensure your downloadable documents (like `MENTOR_MENTEE_USER_MANUAL.pdf`) are placed exactly inside the `public/` directory so the frontend can serve them.
 
-# Backend/Data Configuration (Example)
-# The application uses local data files for persistence and lookups.
-```
+#### 5. Run the Application
+You will need to run the **backend** and **frontend** concurrently.
 
-#### 4. Run the Application
+**Start the Backend (Port 3001)**
+\`\`\`bash
+node index.js
+\`\`\`
 
-Run the **backend** and **frontend** separately.
-
-**Start the Backend**
-```bash
-bun run start:backend
-# OR
-node backend/index.js
-```
-
-**Start the Frontend**
-```bash
+**Start the Frontend (Port 5173)**
+\`\`\`bash
 bun run dev
-# OR
-npm run dev
-# OR
-yarn dev
-```
+\`\`\`
 
+Open your browser and navigate to `http://localhost:5173` to start chatting!
 
 ---
 
@@ -112,4 +105,4 @@ See `LICENSE.md` for more information.
 
 ---
 
-### Made with 💙 by [IshaanBhatt23](https://github.com/IshaanBhatt23)
+### Made with 💙 by [IshaanBhatt23](https://github.com/IshaanBhatt23) and [Bhargav Kishore](https://github.com/Kishore-Bhargav)
