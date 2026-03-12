@@ -5,18 +5,23 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import Fuse from "fuse.js";
+import dotenv from "dotenv";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// === Groq API Details ===
-const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
-const GROQ_API_KEY = "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";
-
 // === Paths ===
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// 🔹 CRITICAL FIX: Tell dotenv exactly where the .env file is!
+dotenv.config({ path: path.join(__dirname, '.env') });
+
+// === Groq API Details ===
+const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
+const GROQ_API_KEY = process.env.GROQ_API_KEY; 
+
 const toolsDir = path.join(__dirname, "tools");
 const leaveDbPath = path.join(toolsDir, "leave_applications.json");
 const stockDbPath = path.join(toolsDir, "stock_level.json");
