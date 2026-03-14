@@ -7,21 +7,22 @@ import { fileURLToPath } from "url";
 import Fuse from "fuse.js";
 import dotenv from "dotenv";
 
+// 1. FIRST, define __dirname so Node knows exactly what folder we are in
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// 2. SECOND, tell dotenv to load the .env file from this exact folder
+dotenv.config({ path: path.join(__dirname, '.env') });
+
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// === Paths ===
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// 🔹 CRITICAL FIX: Tell dotenv exactly where the .env file is!
-dotenv.config({ path: path.join(__dirname, '.env') });
-
-// === Groq API Details ===
+// 3. THIRD, now that it's loaded, grab the key securely!
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
-const GROQ_API_KEY = process.env.GROQ_API_KEY; 
+const GROQ_API_KEY = process.env.GROQ_API_KEY; // This pulls from the .env file!
 
+// === Paths ===
 const toolsDir = path.join(__dirname, "tools");
 const leaveDbPath = path.join(toolsDir, "leave_applications.json");
 const stockDbPath = path.join(toolsDir, "stock_level.json");

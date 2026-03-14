@@ -31,16 +31,26 @@ export const ChatInput = ({
 
   const animationFrameRef = useRef<number | null>(null);
 
+  // Auto-focus when session changes OR when the bot finishes replying (!disabled)
   useEffect(() => {
-    inputRef.current?.focus();
-  }, [activeSessionId]);
+    if (!disabled) {
+      // A tiny timeout ensures the DOM has switched back from the waveform to the normal input
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 50);
+    }
+  }, [activeSessionId, disabled]);
 
   const handleSend = (overrideMessage?: string) => {
     const textToSend = (overrideMessage ?? message).trim();
     if (textToSend && !disabled) {
       onSendMessage(textToSend);
       setMessage("");
-      inputRef.current?.focus();
+      
+      // Auto-focus immediately after sending as well
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 50);
     }
   };
 
