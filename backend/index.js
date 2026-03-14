@@ -181,7 +181,6 @@ const tools = [
 ];
 
 // === getToolsPrompt with priority rules ===
-// === getToolsPrompt with priority rules ===
 const getToolsPrompt = () => {
   return `You are a helpful and friendly SAP Assistant. Your primary goal is to assist users with specific SAP related tasks using the tools provided, explaining concepts clearly.
 
@@ -213,8 +212,8 @@ const getToolsPrompt = () => {
   A. For text responses: { "type": "text", "content": "Your conversational response here." }
   B. To use a tool: { "type": "tool_call", "tool_name": "name_of_the_tool", "parameters": { /* extracted parameters */ } }`;
 };
+
 // === HELPER FUNCTION TO CALL GROQ ===
-// NOTICE: Added chatHistory parameter to inject memory!
 async function callGroqLLM(systemPrompt, userPrompt, isJsonMode = false, chatHistory = []) {
   if (!GROQ_API_KEY) {
     console.error("GROQ_API_KEY environment variable not set.");
@@ -306,14 +305,42 @@ app.post("/api/chat", async (req, res) => {
 
   console.log(`\n*** Received query: "${originalUserQuery}" ***`);
 
+  // 👇 THE ULTIMATE FIX: HARDCODED INTERCEPTOR 👇
+  // We catch clear/reset commands BEFORE they ever reach the AI. 
+  // This physically prevents 100% of context bleed.
+  const clearCommands = ["clear", "clear chat", "reset", "reset chat", "start over", "restart", "new chat"];
+  const lowerQuery = originalUserQuery.trim().toLowerCase().replace(/[^\w\s]/g, ''); // cleans punctuation
+  
+  if (clearCommands.includes(lowerQuery)) {
+    console.log(">>> System intercepted a clear chat command.");
+    if (previousHistory.length === 0) {
+      return res.json({ type: "text", content: "There is no conversation to clear yet! How can I help you today?" });
+    } else {
+      return res.json({ type: "clear_chat" });
+    }
+  }
+  // 👆 END ULTIMATE FIX 👆
+
   try {
     // === STEP 1: Call Groq for the decision ===
-    const decisionMakingPrompt = `User's latest input: "${originalUserQuery}"\n\nBased on this input and the rules provided in the system prompt, what is the correct JSON response? Pay CLOSE attention to parameter extraction rules for tools. If the user uses pronouns like "it" or "that", use the conversation history context to figure out what they mean!`;
+    const historySummary = previousHistory
+        .map(msg => `${msg.sender === 'user' ? 'User' : 'Assistant'}: ${msg.text}`)
+        .join("\n");
+
+    const decisionMakingPrompt = `CRITICAL INSTRUCTION: You MUST base your intent decision ONLY on the "User's latest input" below. 
+    
+    Recent Conversation Context (Use ONLY to understand pronouns in the latest input):
+    ${historySummary || "None"}
+
+    User's latest input: "${originalUserQuery}"
+    
+    Based on the LATEST input and the rules provided in the system prompt, what is the correct JSON response?`;
+    
     const decisionResult = await callGroqLLM(
       getToolsPrompt(),
       decisionMakingPrompt,
       true,
-      previousHistory // Injecting memory here
+      [] // Keep array empty so the AI focuses solely on the decisionMakingPrompt
     );
 
     if (decisionResult && decisionResult.error) {
@@ -435,7 +462,7 @@ app.post("/api/chat", async (req, res) => {
             }
           }
 
-          // Injecting memory here
+          // We pass previousHistory here because we DO want it to have conversational memory when explaining things!
           const finalResult = await callGroqLLM(llmSystemPrompt, llmUserPrompt, false, previousHistory);
 
           if (finalResult && !finalResult.error) {
@@ -514,7 +541,6 @@ app.post("/api/chat", async (req, res) => {
             3. Keep the answer short and practical.
           `;
 
-          // Injecting memory here
           const finalResult = await callGroqLLM(llmSystemPrompt, llmUserPrompt, false, previousHistory);
 
           if (finalResult && !finalResult.error) {
@@ -843,7 +869,6 @@ app.post("/api/chat", async (req, res) => {
           console.warn(`>>> Unhandled tool detected: ${decision.tool_name}`);
           const fallbackTextPrompt = `The user said: "${originalUserQuery}". I decided to use a tool called '${decision.tool_name}' which isn't recognized. Ask the user to clarify or rephrase.`;
           
-          // Injecting memory here
           const fallbackResult = await callGroqLLM(
             "You are a helpful SAP assistant.",
             fallbackTextPrompt,

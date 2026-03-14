@@ -83,6 +83,17 @@ const Index = () => {
 
       const botResponseData: MessageData = await response.json();
 
+      // 👇 NEW LOGIC: Intercept "clear_chat" intent and delete the session entirely.
+      if ((botResponseData as any).type === "clear_chat") {
+        handleDeleteSession(currentSessionId); 
+        // We REMOVED the handleNewChat call here so it doesn't pile up empty sessions.
+        // It will perfectly revert to the 4 default buttons automatically.
+        setIsBotTyping(false);
+        abortControllerRef.current = null;
+        return; 
+      }
+      // 👆 END NEW LOGIC
+
       const botMsg: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
